@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101119">
+  <meta name="description" content="A small, offline-ready falling-block arcade. No accounts, no downloads, just one more game.">
+  <title>Tetris — One more line</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Classic deferred scripts also work directly over file://; no server or bundler required. -->
+  <script defer src="engine.js"></script>
+  <script defer src="renderer.js"></script>
+  <script defer src="music.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <main class="arcade">
+    <header class="masthead">
+      <a class="brand" href="./index.html" aria-label="Tetris home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span>TETRIS<span class="brand-caption">ONE MORE LINE.</span></span>
+      </a>
+      <div class="header-actions">
+        <span class="offline-badge"><span></span> OFFLINE ARCADE</span>
+        <button id="music-button" class="icon-button" type="button" aria-label="Mute all audio" aria-pressed="true" title="Neon Sprint + game sounds · Mute all audio"><span aria-hidden="true">♫</span></button>
+        <button id="pause-button" class="icon-button" type="button" disabled aria-label="Pause game" title="Pause / resume (P)"><span id="pause-symbol" aria-hidden="true">Ⅱ</span></button>
+        <button id="restart-button" class="icon-button" type="button" aria-label="Restart game" title="Restart (R)"><span aria-hidden="true">↻</span></button>
+      </div>
+    </header>
+
+    <section class="game-layout" aria-label="Tetris game">
+      <aside class="stats-panel" aria-label="Game statistics">
+        <div class="panel-heading"><span class="tiny-square"></span> YOUR RUN</div>
+        <div class="score-card">
+          <h2>SCORE</h2>
+          <output id="score" class="score-number">0</output>
+          <div class="best-row"><span>PERSONAL BEST</span><output id="best">0</output></div>
+        </div>
+        <div class="stat-pair">
+          <div class="stat-card"><h2>LEVEL</h2><output id="level">01</output></div>
+          <div class="stat-card"><h2>LINES</h2><output id="lines">0</output></div>
+        </div>
+        <div class="level-progress">
+          <div><span>NEXT LEVEL</span><span id="progress-text">0 / 10</span></div>
+          <div id="level-progress" class="progress-track" role="progressbar" aria-label="Lines toward next level" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span id="progress-fill"></span></div>
+        </div>
+        <div class="run-note"><span class="note-mark">✦</span><p>Find your flow.<br>Make a little space.</p></div>
+        <p id="storage-note" class="storage-note" hidden>High score is session-only; local storage is unavailable.</p>
+      </aside>
+
+      <div class="board-column">
+        <div class="board-topline"><span id="status-label"><i></i> READY WHEN YOU ARE</span><span>10 × 20</span></div>
+        <div id="board-shell" class="board-shell">
+          <canvas id="board" width="300" height="600" tabindex="0" aria-label="Tetris playfield, 10 columns and 20 rows. Keyboard controls are listed beside the board.">This game needs a browser with Canvas support.</canvas>
+          <div id="game-overlay" class="game-overlay">
+            <div class="overlay-content">
+              <div id="overlay-eyebrow" class="eyebrow">A LITTLE FOCUS. A LOT OF FUN.</div>
+              <h1 id="overlay-title">One more<br><span>line.</span></h1>
+              <p id="overlay-description">Stack, rotate, clear. See how far you can go.</p>
+              <button id="primary-button" class="primary-button" type="button">Let’s play <span aria-hidden="true">→</span></button>
+              <span id="overlay-hint" class="overlay-hint">PRESS ENTER TO START</span>
+            </div>
+          </div>
+          <div id="board-announcement" class="board-announcement" aria-hidden="true"></div>
+        </div>
+        <div class="board-bottomline"><span><i class="ghost-key"></i> GHOST = LANDING POSITION</span><span id="speed-label">1.00s / STEP</span></div>
+      </div>
+
+      <aside class="help-panel">
+        <section class="next-panel" aria-label="Upcoming pieces">
+          <h2><span class="tiny-square"></span> UP NEXT <span class="queue-count">03</span></h2>
+          <canvas id="next" width="180" height="252" aria-label="Preview of the next three pieces"></canvas>
+        </section>
+        <section class="controls-panel" aria-label="Keyboard controls">
+          <h2>HOW TO PLAY</h2>
+          <dl>
+            <div><dt>Move</dt><dd><kbd>←</kbd><kbd>→</kbd></dd></div>
+            <div><dt>Rotate right</dt><dd><kbd>↑</kbd><span>/</span><kbd>X</kbd></dd></div>
+            <div><dt>Rotate left</dt><dd><kbd>Z</kbd></dd></div>
+            <div><dt>Soft drop</dt><dd><kbd>↓</kbd></dd></div>
+            <div><dt>Hard drop</dt><dd><kbd class="wide-key">SPACE</kbd></dd></div>
+            <div><dt>Pause</dt><dd><kbd>P</kbd><span>/</span><kbd>ESC</kbd></dd></div>
+            <div><dt>Restart</dt><dd><kbd>R</kbd></dd></div>
+          </dl>
+        </section>
+        <p class="scoring-note">Clear multiple lines at once for more points. Every 10 lines, the pace picks up.</p>
+      </aside>
+    </section>
+
+    <section class="touch-controls" aria-label="Touch game controls">
+      <div class="touch-row">
+        <button type="button" data-action="ccw" aria-label="Rotate counterclockwise">↶<small>ROTATE</small></button>
+        <button type="button" data-action="left" aria-label="Move left">←<small>LEFT</small></button>
+        <button type="button" data-action="down" aria-label="Soft drop">↓<small>DOWN</small></button>
+        <button type="button" data-action="right" aria-label="Move right">→<small>RIGHT</small></button>
+        <button type="button" data-action="cw" aria-label="Rotate clockwise">↷<small>ROTATE</small></button>
+      </div>
+      <button type="button" class="touch-drop" data-action="drop" aria-label="Hard drop">HARD DROP <span aria-hidden="true">↓</span></button>
+    </section>
+    <footer><span>NO DOWNLOADS. NO DISTRACTIONS.</span><span>BUILT FOR ONE MORE TRY <span class="footer-star">✦</span></span></footer>
+    <p id="live-status" class="sr-only" role="status" aria-live="polite"></p>
+    <noscript><p class="noscript">Enable JavaScript to play. The game works entirely offline.</p></noscript>
+  </main>
+</body>
+</html>
